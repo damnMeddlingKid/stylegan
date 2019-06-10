@@ -143,6 +143,9 @@ def locate_network_pkl(run_id_or_run_dir_or_network_pkl, snapshot_or_network_pkl
         except IndexError: pass
     raise IOError('Cannot locate network pkl for snapshot', snapshot_or_network_pkl)
 
+def has_results():
+    return len(sorted(glob.glob(os.path.join(config.result_dir, '0*', 'network-*.pkl')))) > 0
+
 def locate_latest_pkl():
     allpickles = sorted(glob.glob(os.path.join(config.result_dir, '0*', 'network-*.pkl')))
     latest_pickle = allpickles[-1]
