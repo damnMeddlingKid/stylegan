@@ -19,6 +19,7 @@ import dnnlib
 import config
 from training import dataset
 
+
 #----------------------------------------------------------------------------
 # Convenience wrappers for pickle that are able to load data produced by
 # older versions of the code, and from external URLs.
@@ -141,6 +142,14 @@ def locate_network_pkl(run_id_or_run_dir_or_network_pkl, snapshot_or_network_pkl
         except ValueError: pass
         except IndexError: pass
     raise IOError('Cannot locate network pkl for snapshot', snapshot_or_network_pkl)
+
+def locate_latest_pkl():
+    allpickles = sorted(glob.glob(os.path.join(config.result_dir, '0*', 'network-*.pkl')))
+    latest_pickle = allpickles[-1]
+    resume_run_id = os.path.basename(os.path.dirname(latest_pickle))
+    RE_KIMG = re.compile('network-snapshot-(\d+).pkl')
+    kimg = int(RE_KIMG.match(os.path.basename(latest_pickle)).group(1))
+    return (locate_network_pkl(resume_run_id), float(kimg))
 
 def get_id_string_for_network_pkl(network_pkl):
     p = network_pkl.replace('.pkl', '').replace('\\', '/').split('/')
